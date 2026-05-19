@@ -1,0 +1,1463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bloom — A Coding Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,300&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --mint: #d4f0e8;
+    --mint-deep: #a8dfd0;
+    --mint-text: #1a6b54;
+    --sky: #daeef9;
+    --sky-deep: #b0d9f0;
+    --sky-text: #1a5a7a;
+    --blush: #fce8e8;
+    --blush-deep: #f5c4c4;
+    --cream: #fef9f2;
+    --warm-white: #fffdf9;
+    --petal: #f9f0fa;
+    --charcoal: #1e1e1e;
+    --ink: #2d2d2d;
+    --muted: #6b7280;
+    --border: #e8e2d9;
+    --border-light: #f0ebe2;
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body: 'Instrument Sans', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --nav-h: 64px;
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    background: rgba(254, 249, 242, 0.82);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-light);
+    display: flex; align-items: center;
+    padding: 0 max(2rem, calc(50% - 680px));
+  }
+  .nav-inner {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    cursor: pointer;
+    letter-spacing: -0.02em;
+    transition: opacity 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-logo span { color: var(--mint-text); }
+  .nav-logo:hover { opacity: 0.75; }
+  .nav-links {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-link:hover { color: var(--ink); background: var(--border-light); }
+  .nav-link.active { color: var(--mint-text); background: var(--mint); }
+  .nav-cta {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--warm-white);
+    cursor: pointer;
+    padding: 7px 18px;
+    border-radius: 20px;
+    background: var(--ink);
+    transition: all 0.2s;
+    margin-left: 8px;
+  }
+  .nav-cta:hover { background: var(--mint-text); transform: translateY(-1px); }
+
+  /* ── PAGES ── */
+  .page { display: none; padding-top: var(--nav-h); min-height: 100vh; }
+  .page.active { display: block; }
+
+  /* ── HOME PAGE ── */
+  .hero {
+    padding: 6rem max(2rem, calc(50% - 680px)) 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 60%, rgba(212,240,232,0.5) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(218,238,249,0.45) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 35% at 65% 80%, rgba(252,232,232,0.35) 0%, transparent 55%);
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 700px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--mint-text);
+    background: var(--mint);
+    border: 1px solid var(--mint-deep);
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.6s var(--ease-out) both;
+  }
+  .hero-badge::before { content: '◎'; font-size: 0.6rem; }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    color: var(--charcoal);
+    margin-bottom: 1.25rem;
+    animation: fadeUp 0.6s 0.1s var(--ease-out) both;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--mint-text);
+  }
+  .hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.6s 0.2s var(--ease-out) both;
+    line-height: 1.7;
+  }
+  .hero-actions {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s var(--ease-out) both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border-radius: 28px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s var(--ease-spring);
+    border: none;
+  }
+  .btn-primary:hover { background: var(--mint-text); transform: translateY(-2px); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    background: transparent;
+    color: var(--ink);
+    border-radius: 28px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    border: 1.5px solid var(--border);
+  }
+  .btn-secondary:hover { border-color: var(--mint-deep); background: var(--mint); color: var(--mint-text); }
+
+  /* floating petals */
+  .petals { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .petal {
+    position: absolute;
+    width: 6px; height: 6px;
+    border-radius: 50% 0 50% 0;
+    opacity: 0;
+    animation: fall linear infinite;
+  }
+
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(120vh) rotate(720deg); opacity: 0; }
+  }
+
+  /* ── LATEST POSTS ── */
+  .section {
+    padding: 5rem max(2rem, calc(50% - 680px));
+  }
+  .section-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 2.5rem;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    color: var(--charcoal);
+  }
+  .section-link {
+    font-size: 0.85rem;
+    color: var(--mint-text);
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  .section-link:hover { opacity: 0.7; }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+  .post-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    padding: 1.75rem;
+    cursor: pointer;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+    overflow: hidden;
+  }
+  .post-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, var(--mint) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    border-radius: inherit;
+  }
+  .post-card:hover { transform: translateY(-4px); border-color: var(--mint-deep); box-shadow: 0 12px 40px rgba(26,107,84,0.08); }
+  .post-card:hover::before { opacity: 0.35; }
+  .post-card > * { position: relative; z-index: 1; }
+  .post-tag {
+    display: inline-flex; align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .tag-mint { background: var(--mint); color: var(--mint-text); }
+  .tag-sky { background: var(--sky); color: var(--sky-text); }
+  .tag-blush { background: var(--blush); color: #8b3a3a; }
+  .tag-petal { background: var(--petal); color: #6b3a7a; }
+  .post-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 500;
+    line-height: 1.3;
+    letter-spacing: -0.02em;
+    color: var(--charcoal);
+    margin-bottom: 0.625rem;
+  }
+  .post-excerpt {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+  .post-meta {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+  }
+  .post-meta-left { display: flex; align-items: center; gap: 8px; }
+  .post-avatar {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+    font-family: var(--font-body);
+  }
+
+  /* ── FEATURED SNIPPETS ── */
+  .snippets-section {
+    background: var(--warm-white);
+    border-top: 1px solid var(--border-light);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .snippets-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+  .snippet-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s var(--ease-out);
+    cursor: pointer;
+  }
+  .snippet-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.06); }
+  .snippet-header {
+    padding: 0.875rem 1.1rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--border-light);
+    background: var(--warm-white);
+  }
+  .snippet-lang {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+  }
+  .snippet-dots { display: flex; gap: 5px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; }
+  .dot-r { background: #ffbdbc; }
+  .dot-y { background: #ffdda0; }
+  .dot-g { background: #b6e9c7; }
+  .snippet-body {
+    padding: 1.1rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .kw { color: #8b5cf6; }
+  .fn { color: var(--mint-text); }
+  .str { color: #b45309; }
+  .cm { color: var(--muted); font-style: italic; }
+  .snippet-footer {
+    padding: 0.75rem 1.1rem;
+    border-top: 1px solid var(--border-light);
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--warm-white);
+  }
+  .snippet-title { font-size: 0.8rem; font-weight: 500; color: var(--charcoal); }
+  .snippet-copies { font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+
+  /* ── DIVIDER ── */
+  .spring-divider {
+    text-align: center;
+    padding: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--mint-deep);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── ABOUT PAGE ── */
+  .about-hero {
+    padding: 5rem max(2rem, calc(50% - 680px)) 4rem;
+    background: linear-gradient(160deg, var(--mint) 0%, var(--cream) 50%);
+    position: relative;
+  }
+  .about-hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--mint-text);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: var(--charcoal);
+  }
+  .about-lead {
+    font-size: 1.15rem;
+    color: var(--muted);
+    max-width: 580px;
+    line-height: 1.7;
+  }
+  .about-grid {
+    padding: 4rem max(2rem, calc(50% - 680px));
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+  @media (max-width: 700px) { .about-grid { grid-template-columns: 1fr; } }
+  .about-block h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.875rem;
+    color: var(--charcoal);
+  }
+  .about-block p {
+    font-size: 0.95rem;
+    color: var(--muted);
+    line-height: 1.75;
+  }
+  .values-section {
+    background: var(--warm-white);
+    border-top: 1px solid var(--border-light);
+    padding: 4rem max(2rem, calc(50% - 680px));
+  }
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+  .value-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    background: var(--cream);
+    transition: transform 0.3s var(--ease-spring);
+  }
+  .value-card:hover { transform: translateY(-3px); }
+  .value-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+  .value-card h4 { font-weight: 500; font-size: 0.95rem; margin-bottom: 0.4rem; color: var(--charcoal); }
+  .value-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── PROJECTS PAGE ── */
+  .projects-header {
+    padding: 4rem max(2rem, calc(50% - 680px)) 2rem;
+    background: linear-gradient(160deg, var(--sky) 0%, var(--cream) 60%);
+  }
+  .projects-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--charcoal);
+    margin-bottom: 0.75rem;
+  }
+  .projects-subtitle {
+    font-size: 1rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .add-project-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px;
+    background: var(--ink);
+    color: var(--warm-white);
+    border-radius: 24px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s var(--ease-spring);
+  }
+  .add-project-btn:hover { background: var(--sky-text); transform: translateY(-2px); }
+  .add-project-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .projects-grid-wrap {
+    padding: 2.5rem max(2rem, calc(50% - 680px));
+  }
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .project-card {
+    background: var(--warm-white);
+    border: 1px solid var(--border-light);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s var(--ease-out);
+    position: relative;
+    animation: fadeUp 0.4s var(--ease-out) both;
+  }
+  .project-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(26,90,122,0.1); border-color: var(--sky-deep); }
+  .project-banner {
+    height: 120px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .project-body { padding: 1.5rem; }
+  .project-tech-stack {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-bottom: 0.875rem;
+  }
+  .tech-pill {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 3px 9px;
+    border-radius: 10px;
+    background: var(--sky);
+    color: var(--sky-text);
+    border: 1px solid var(--sky-deep);
+  }
+  .project-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+    color: var(--charcoal);
+  }
+  .project-desc {
+    font-size: 0.875rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+  }
+  .project-footer {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .project-author {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .project-actions {
+    display: flex; gap: 6px;
+  }
+  .project-btn {
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .project-btn:hover { background: var(--sky); color: var(--sky-text); border-color: var(--sky-deep); }
+  .project-btn.del:hover { background: var(--blush); color: #8b3a3a; border-color: var(--blush-deep); }
+  .project-remove-btn {
+    position: absolute; top: 10px; right: 10px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.85);
+    border: 1px solid var(--border-light);
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .project-card:hover .project-remove-btn { opacity: 1; pointer-events: all; }
+  .project-remove-btn:hover { background: var(--blush); color: #8b3a3a; border-color: var(--blush-deep); }
+
+  /* ADD PROJECT MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: rgba(30,30,30,0.4);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--warm-white);
+    border-radius: 24px;
+    border: 1px solid var(--border-light);
+    padding: 2.25rem;
+    width: 100%; max-width: 520px;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.35s var(--ease-spring);
+  }
+  .modal-overlay.open .modal { transform: translateY(0) scale(1); }
+  .modal h2 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+    color: var(--charcoal);
+  }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.01em;
+  }
+  .form-input, .form-textarea, .form-select {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--cream);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input:focus, .form-textarea:focus, .form-select:focus {
+    border-color: var(--mint-deep);
+    background: var(--warm-white);
+  }
+  .form-textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+  .form-row { display: flex; gap: 12px; }
+  .form-row .form-group { flex: 1; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem; }
+  .btn-cancel {
+    padding: 9px 20px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-cancel:hover { background: var(--border-light); }
+  .btn-submit {
+    padding: 9px 22px;
+    border-radius: 20px;
+    border: none;
+    background: var(--ink);
+    color: var(--warm-white);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-spring);
+  }
+  .btn-submit:hover { background: var(--sky-text); transform: translateY(-1px); }
+
+  /* ── AUTH PAGE ── */
+  .auth-page {
+    min-height: 100vh;
+    padding-top: var(--nav-h);
+    display: flex;
+    position: relative;
+    overflow: hidden;
+  }
+  .auth-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 0% 50%, rgba(212,240,232,0.55) 0%, transparent 55%),
+      radial-gradient(ellipse 70% 60% at 100% 50%, rgba(218,238,249,0.55) 0%, transparent 55%);
+    z-index: 0;
+  }
+  .auth-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%; position: relative; z-index: 1;
+  }
+  @media (max-width: 768px) {
+    .auth-split { grid-template-columns: 1fr; }
+    .auth-divider-wrap { display: none; }
+  }
+  .auth-panel {
+    display: flex;
+    align-items: center; justify-content: center;
+    padding: 3rem 2rem;
+    position: relative;
+  }
+  .auth-form-wrap {
+    width: 100%; max-width: 380px;
+  }
+  .auth-form-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: 0.5rem;
+    color: var(--charcoal);
+  }
+  .auth-form-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 2rem;
+  }
+  .auth-input-group {
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .auth-input-label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .auth-input {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border);
+    background: rgba(255,255,255,0.7);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--ink);
+    outline: none;
+    transition: all 0.25s;
+  }
+  .auth-input:focus {
+    border-color: var(--mint-deep);
+    background: var(--warm-white);
+    box-shadow: 0 0 0 3px rgba(168,223,208,0.25);
+  }
+  .auth-panel.signup .auth-input:focus {
+    border-color: var(--sky-deep);
+    box-shadow: 0 0 0 3px rgba(176,217,240,0.25);
+  }
+  .auth-submit {
+    width: 100%;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    font-family: var(--font-body);
+    cursor: pointer;
+    margin-top: 1.25rem;
+    transition: all 0.25s var(--ease-spring);
+  }
+  .auth-panel.login .auth-submit {
+    background: var(--mint-text);
+    color: white;
+  }
+  .auth-panel.login .auth-submit:hover { background: var(--ink); transform: translateY(-2px); }
+  .auth-panel.signup .auth-submit {
+    background: var(--sky-text);
+    color: white;
+  }
+  .auth-panel.signup .auth-submit:hover { background: var(--ink); transform: translateY(-2px); }
+  .auth-alt {
+    text-align: center;
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .auth-alt a {
+    color: var(--mint-text);
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  .auth-panel.signup .auth-alt a { color: var(--sky-text); }
+
+  /* center divider animation */
+  .auth-divider-wrap {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .auth-divider-line {
+    width: 1.5px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, var(--mint-deep), transparent);
+    animation: linePulse 3s ease-in-out infinite;
+  }
+  .auth-divider-orb {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--warm-white);
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+    animation: orbFloat 4s ease-in-out infinite;
+  }
+  .auth-divider-line.bottom {
+    background: linear-gradient(to bottom, transparent, var(--sky-deep), transparent);
+  }
+  @keyframes linePulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.08); }
+  }
+  @keyframes orbFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-up {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out);
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* empty state */
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+  .empty-state-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: var(--font-display); font-size: 1.3rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--charcoal); }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    .hero { padding: 4rem 1.5rem 3rem; }
+    .section { padding: 3rem 1.5rem; }
+    .hero-title { font-size: 2.2rem; }
+    .posts-grid, .snippets-grid, .projects-grid { grid-template-columns: 1fr; }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--mint-deep); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="navigate('home')">
+      bloom<span>.</span>dev
+    </div>
+    <div class="nav-links">
+      <span class="nav-link active" id="nav-home" onclick="navigate('home')">Home</span>
+      <span class="nav-link" id="nav-about" onclick="navigate('about')">About</span>
+      <span class="nav-link" id="nav-projects" onclick="navigate('projects')">Projects</span>
+      <span class="nav-cta" onclick="navigate('auth')">Sign in</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div class="page active" id="page-home">
+
+  <section class="hero">
+    <div class="petals" id="petals"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">spring 2025 collection</div>
+      <h1 class="hero-title">
+        Where code<br><em>blooms</em> with<br>clarity
+      </h1>
+      <p class="hero-subtitle">
+        A curated space for developers who care about craft — thoughtful articles, real code snippets, and ideas that grow.
+      </p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="navigate('projects')">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+          Explore Projects
+        </button>
+        <button class="btn-secondary" onclick="navigate('about')">
+          Our Mission →
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">Latest Posts</h2>
+      <span class="section-link">View all →</span>
+    </div>
+    <div class="posts-grid">
+
+      <div class="post-card fade-up">
+        <span class="post-tag tag-mint">TypeScript</span>
+        <h3 class="post-title">Building a Type-Safe API Layer with Zod & Fetch</h3>
+        <p class="post-excerpt">Runtime validation meets compile-time safety — a pattern that's changed how I think about data fetching entirely.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--mint);color:var(--mint-text)">YK</div>
+            <span>Yuki Kimura</span>
+          </div>
+          <span>Apr 12 · 8 min</span>
+        </div>
+      </div>
+
+      <div class="post-card fade-up" style="transition-delay:0.07s">
+        <span class="post-tag tag-sky">CSS</span>
+        <h3 class="post-title">The Container Query Spring — Responsive Without Breakpoints</h3>
+        <p class="post-excerpt">Container queries have quietly matured into something production-ready. Here's the mental model that makes them click.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--sky);color:var(--sky-text)">AM</div>
+            <span>Asel Mirzaeva</span>
+          </div>
+          <span>Apr 8 · 6 min</span>
+        </div>
+      </div>
+
+      <div class="post-card fade-up" style="transition-delay:0.14s">
+        <span class="post-tag tag-petal">Architecture</span>
+        <h3 class="post-title">Signals Over State — A Quiet Revolution in Reactivity</h3>
+        <p class="post-excerpt">From Solid to Angular 17, signals are reshaping how we model UI. Let's trace the lineage and understand the tradeoffs.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--petal);color:#6b3a7a">LD</div>
+            <span>Lior Danon</span>
+          </div>
+          <span>Apr 3 · 10 min</span>
+        </div>
+      </div>
+
+      <div class="post-card fade-up" style="transition-delay:0.21s">
+        <span class="post-tag tag-blush">Performance</span>
+        <h3 class="post-title">Core Web Vitals in 2025: What Still Matters</h3>
+        <p class="post-excerpt">The goalposts have shifted again. INP is now the headline metric — and optimizing for it requires a different mindset.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--blush);color:#8b3a3a">SP</div>
+            <span>Sara Park</span>
+          </div>
+          <span>Mar 28 · 7 min</span>
+        </div>
+      </div>
+
+      <div class="post-card fade-up" style="transition-delay:0.28s">
+        <span class="post-tag tag-mint">Rust</span>
+        <h3 class="post-title">WASM + Rust for Frontend Devs: A Gentle On-Ramp</h3>
+        <p class="post-excerpt">You don't need to master Rust to benefit from it in the browser. Here's a focused path that skips the overwhelming parts.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--mint);color:var(--mint-text)">TO</div>
+            <span>Tao Ou</span>
+          </div>
+          <span>Mar 22 · 12 min</span>
+        </div>
+      </div>
+
+      <div class="post-card fade-up" style="transition-delay:0.35s">
+        <span class="post-tag tag-sky">DX</span>
+        <h3 class="post-title">The Terminal Toolkit I Actually Use Daily</h3>
+        <p class="post-excerpt">Less config theater, more flow. A curated set of tools that reduce friction and keep me in the code.</p>
+        <div class="post-meta">
+          <div class="post-meta-left">
+            <div class="post-avatar" style="background:var(--sky);color:var(--sky-text)">NF</div>
+            <span>Nadia Frost</span>
+          </div>
+          <span>Mar 18 · 5 min</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="spring-divider">✦ &nbsp; &nbsp; featured snippets &nbsp; &nbsp; ✦</div>
+
+  <section class="section snippets-section">
+    <div class="section-header">
+      <h2 class="section-title">Featured Snippets</h2>
+      <span class="section-link">Browse library →</span>
+    </div>
+    <div class="snippets-grid">
+
+      <div class="snippet-card fade-up">
+        <div class="snippet-header">
+          <span class="snippet-lang">typescript</span>
+          <div class="snippet-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        </div>
+        <div class="snippet-body"><span class="cm">// exhaustive pattern matching</span>
+<span class="kw">type</span> <span class="fn">Result</span>&lt;T&gt; = 
+  | { ok: <span class="kw">true</span>; data: T }
+  | { ok: <span class="kw">false</span>; error: <span class="kw">string</span> };
+
+<span class="kw">function</span> <span class="fn">match</span>&lt;T, R&gt;(
+  result: <span class="fn">Result</span>&lt;T&gt;,
+  handlers: {
+    ok: (data: T) =&gt; R;
+    err: (e: <span class="kw">string</span>) =&gt; R;
+  }
+): R {
+  <span class="kw">return</span> result.ok
+    ? handlers.ok(result.data)
+    : handlers.err(result.error);
+}</div>
+        <div class="snippet-footer">
+          <span class="snippet-title">Result type + match</span>
+          <span class="snippet-copies">↗ 1.2k copies</span>
+        </div>
+      </div>
+
+      <div class="snippet-card fade-up" style="transition-delay:0.08s">
+        <div class="snippet-header">
+          <span class="snippet-lang">python</span>
+          <div class="snippet-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        </div>
+        <div class="snippet-body"><span class="cm"># async retry with backoff</span>
+<span class="kw">import</span> asyncio, functools
+
+<span class="kw">def</span> <span class="fn">retry</span>(times=3, backoff=1.5):
+  <span class="kw">def</span> decorator(fn):
+    @functools.wraps(fn)
+    <span class="kw">async def</span> <span class="fn">wrapper</span>(*a, **kw):
+      delay = 1
+      <span class="kw">for</span> i <span class="kw">in</span> range(times):
+        <span class="kw">try</span>:
+          <span class="kw">return await</span> fn(*a, **kw)
+        <span class="kw">except</span> Exception:
+          <span class="kw">if</span> i == times - 1: <span class="kw">raise</span>
+          <span class="kw">await</span> asyncio.<span class="fn">sleep</span>(delay)
+          delay *= backoff
+    <span class="kw">return</span> wrapper
+  <span class="kw">return</span> decorator</div>
+        <div class="snippet-footer">
+          <span class="snippet-title">Async retry decorator</span>
+          <span class="snippet-copies">↗ 876 copies</span>
+        </div>
+      </div>
+
+      <div class="snippet-card fade-up" style="transition-delay:0.16s">
+        <div class="snippet-header">
+          <span class="snippet-lang">css</span>
+          <div class="snippet-dots"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        </div>
+        <div class="snippet-body"><span class="cm">/* fluid type scale */</span>
+:root {
+  --step-0: clamp(
+    1rem,
+    0.9rem + 0.5vw,
+    1.25rem
+  );
+  --step-1: clamp(
+    1.2rem,
+    1rem + 1vw,
+    1.6rem
+  );
+  --step-2: clamp(
+    1.44rem,
+    1.1rem + 1.7vw,
+    2rem
+  );
+}
+
+<span class="fn">body</span> { font-size: <span class="kw">var</span>(--step-0); }
+<span class="fn">h2</span>   { font-size: <span class="kw">var</span>(--step-1); }
+<span class="fn">h1</span>   { font-size: <span class="kw">var</span>(--step-2); }</div>
+        <div class="snippet-footer">
+          <span class="snippet-title">Fluid type scale</span>
+          <span class="snippet-copies">↗ 2.3k copies</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════ ABOUT PAGE ══════════════ -->
+<div class="page" id="page-about">
+  <div class="about-hero">
+    <div class="about-hero-label">// about us</div>
+    <h1 class="about-title">Craft, community,<br>and clean code.</h1>
+    <p class="about-lead">
+      Bloom is a space for developers who believe that the how matters as much as the what — where ideas are explored with depth, and shared without noise.
+    </p>
+  </div>
+
+  <div class="about-grid">
+    <div class="about-block fade-up">
+      <h3>Our origin story</h3>
+      <p>Bloom started as a personal Notion doc in 2022 — a collection of hard-won patterns, late-night debugging sessions, and architecture decisions that either worked beautifully or failed spectacularly. Publishing it felt like the right thing to do.</p>
+    </div>
+    <div class="about-block fade-up" style="transition-delay:0.1s">
+      <h3>What we publish</h3>
+      <p>Long-form technical essays, reusable code snippets with real context, and project spotlights. Everything is edited for clarity. We favor depth over volume — a small number of genuinely useful things beats an endless feed.</p>
+    </div>
+    <div class="about-block fade-up" style="transition-delay:0.2s">
+      <h3>Who writes here</h3>
+      <p>A small rotating group of contributors — mostly working engineers, occasional researchers, and the occasional designer who actually knows what a closure is. Applications are open, but selective.</p>
+    </div>
+    <div class="about-block fade-up" style="transition-delay:0.3s">
+      <h3>The tech stack</h3>
+      <p>Lean and boring in the best way: static generation, edge caching, a real database for dynamic features, and zero cookie banners. The irony of not using the latest framework is not lost on us.</p>
+    </div>
+  </div>
+
+  <div class="values-section">
+    <h2 class="section-title">What we stand for</h2>
+    <div class="values-grid">
+      <div class="value-card fade-up">
+        <div class="value-icon">🌱</div>
+        <h4>Depth over virality</h4>
+        <p>We write for readers who slow down. Not for the algorithm.</p>
+      </div>
+      <div class="value-card fade-up" style="transition-delay:0.07s">
+        <div class="value-icon">🔍</div>
+        <h4>Show your work</h4>
+        <p>Every claim should be traceable. We link sources and share failures.</p>
+      </div>
+      <div class="value-card fade-up" style="transition-delay:0.14s">
+        <div class="value-icon">🤝</div>
+        <h4>Community-first</h4>
+        <p>The Projects section exists because great ideas deserve visibility.</p>
+      </div>
+      <div class="value-card fade-up" style="transition-delay:0.21s">
+        <div class="value-icon">🌸</div>
+        <h4>Seasonal freshness</h4>
+        <p>Content is reviewed and pruned. Old posts that mislead get flagged or removed.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ PROJECTS PAGE ══════════════ -->
+<div class="page" id="page-projects">
+  <div class="projects-header">
+    <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--sky-text);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.875rem">// community projects</div>
+    <h1 class="projects-title">Projects in bloom</h1>
+    <p class="projects-subtitle">Open source work, experiments, and tools from the community. Add yours.</p>
+    <button class="add-project-btn" onclick="openModal()">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Add your project
+    </button>
+  </div>
+
+  <div class="projects-grid-wrap">
+    <div class="projects-grid" id="projectsGrid">
+      <!-- cards rendered by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════ AUTH PAGE ══════════════ -->
+<div class="page" id="page-auth">
+  <div class="auth-page">
+    <div class="auth-bg"></div>
+    <div class="auth-split">
+
+      <!-- LOGIN -->
+      <div class="auth-panel login">
+        <div class="auth-form-wrap">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--mint-text);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.875rem">Welcome back</div>
+          <h2 class="auth-form-title">Sign in</h2>
+          <p class="auth-form-sub">Pick up where you left off.</p>
+
+          <div class="auth-input-group">
+            <label class="auth-input-label">Email</label>
+            <input class="auth-input" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-input-label">Password</label>
+            <input class="auth-input" type="password" placeholder="••••••••" />
+          </div>
+          <div style="text-align:right;margin-top:-0.25rem;margin-bottom:0.25rem">
+            <a style="font-size:0.8rem;color:var(--mint-text);cursor:pointer;font-weight:500">Forgot password?</a>
+          </div>
+          <button class="auth-submit" onclick="handleLogin()">Sign in to Bloom</button>
+          <div class="auth-alt">
+            No account yet? <a onclick="navigate('auth')">Create one</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DIVIDER -->
+      <div class="auth-divider-wrap">
+        <div class="auth-divider-line"></div>
+        <div class="auth-divider-orb">🌸</div>
+        <div class="auth-divider-line bottom"></div>
+      </div>
+
+      <!-- SIGN UP -->
+      <div class="auth-panel signup">
+        <div class="auth-form-wrap">
+          <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--sky-text);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.875rem">New here?</div>
+          <h2 class="auth-form-title">Create account</h2>
+          <p class="auth-form-sub">Join a community that cares about craft.</p>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div class="auth-input-group">
+              <label class="auth-input-label">First name</label>
+              <input class="auth-input" type="text" placeholder="Yuki" />
+            </div>
+            <div class="auth-input-group">
+              <label class="auth-input-label">Last name</label>
+              <input class="auth-input" type="text" placeholder="Kimura" />
+            </div>
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-input-label">Email</label>
+            <input class="auth-input" type="email" placeholder="you@example.com" />
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-input-label">Password</label>
+            <input class="auth-input" type="password" placeholder="min. 8 characters" />
+          </div>
+          <div class="auth-input-group">
+            <label class="auth-input-label">Role</label>
+            <select class="auth-input">
+              <option>Frontend Developer</option>
+              <option>Backend Developer</option>
+              <option>Full Stack Developer</option>
+              <option>Designer</option>
+              <option>DevOps / SRE</option>
+              <option>Student / Learning</option>
+            </select>
+          </div>
+          <button class="auth-submit">Join Bloom</button>
+          <div class="auth-alt">
+            Already have an account? <a onclick="navigate('auth')">Sign in</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ADD PROJECT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <h2>Add your project</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Project name *</label>
+        <input class="form-input" id="pName" placeholder="My Awesome Tool" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Emoji icon</label>
+        <input class="form-input" id="pEmoji" placeholder="🚀" maxlength="2" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Short description *</label>
+      <textarea class="form-textarea" id="pDesc" placeholder="What does it do? Keep it to 1-2 sentences."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tech stack (comma-separated)</label>
+      <input class="form-input" id="pStack" placeholder="React, TypeScript, Tailwind" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Your name</label>
+        <input class="form-input" id="pAuthor" placeholder="Yuki Kimura" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Banner color</label>
+        <select class="form-select" id="pColor">
+          <option value="mint">Mint</option>
+          <option value="sky">Sky Blue</option>
+          <option value="blush">Blush</option>
+          <option value="petal">Petal</option>
+          <option value="amber">Amber</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+      <button class="btn-submit" onclick="addProject()">Add Project</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAVIGATION ──
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const navEl = document.getElementById('nav-' + page);
+  if (navEl) navEl.classList.add('active');
+  window.scrollTo(0,0);
+  setTimeout(initFadeUps, 50);
+}
+
+// ── SCROLL ANIMATIONS ──
+function initFadeUps() {
+  const els = document.querySelectorAll('.fade-up:not(.visible)');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }});
+  }, { threshold: 0.12 });
+  els.forEach(el => io.observe(el));
+}
+initFadeUps();
+
+// ── PETALS ──
+(function spawnPetals() {
+  const container = document.getElementById('petals');
+  if (!container) return;
+  const colors = ['#d4f0e8','#daeef9','#fce8e8','#f9f0fa','#fef0c7','#b6e9c7'];
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      top:${Math.random()*-100}px;
+      width:${4+Math.random()*5}px;
+      height:${4+Math.random()*5}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${8+Math.random()*12}s;
+      animation-delay:${Math.random()*-15}s;
+    `;
+    container.appendChild(p);
+  }
+})();
+
+// ── PROJECTS DATA ──
+const bannerColors = {
+  mint:   { bg:'linear-gradient(135deg,#d4f0e8,#a8dfd0)', text:'#1a6b54' },
+  sky:    { bg:'linear-gradient(135deg,#daeef9,#b0d9f0)', text:'#1a5a7a' },
+  blush:  { bg:'linear-gradient(135deg,#fce8e8,#f5c4c4)', text:'#8b3a3a' },
+  petal:  { bg:'linear-gradient(135deg,#f9f0fa,#e8d0ec)', text:'#6b3a7a' },
+  amber:  { bg:'linear-gradient(135deg,#fef3d0,#fddfa0)', text:'#8b5e08' },
+};
+
+let projects = [
+  {
+    id: 1, name: 'Zephyr UI', emoji: '🌬️', color: 'sky',
+    stack: ['React','TypeScript','Radix'],
+    desc: 'An accessible component library built on Radix primitives. Ships with 40+ components and zero style opinions.',
+    author: 'Asel M.', stars: 342
+  },
+  {
+    id: 2, name: 'Sprout CLI', emoji: '🌱', color: 'mint',
+    stack: ['Rust','Clap','Tokio'],
+    desc: 'A project scaffolding tool that spins up opinionated monorepos in under 3 seconds. Inspired by Turborepo and Nx.',
+    author: 'Tao O.', stars: 218
+  },
+  {
+    id: 3, name: 'Petal Forms', emoji: '🌸', color: 'petal',
+    stack: ['React Hook Form','Zod','Tailwind'],
+    desc: 'Form primitives that handle validation, accessibility, and error states without fighting you. Drop-in and go.',
+    author: 'Yuki K.', stars: 504
+  },
+  {
+    id: 4, name: 'VitaLog', emoji: '📊', color: 'blush',
+    stack: ['Next.js','Prisma','PostgreSQL'],
+    desc: 'A lightweight nutrition logger with a focus on speed — log a meal in under 10 taps. SQL-native data model.',
+    author: 'Sara P.', stars: 89
+  },
+  {
+    id: 5, name: 'Orbit.css', emoji: '✨', color: 'amber',
+    stack: ['CSS','PostCSS','Vanilla JS'],
+    desc: 'A micro-animation library built entirely on CSS custom properties. No JavaScript required for 90% of effects.',
+    author: 'Nadia F.', stars: 1200
+  },
+];
+let nextId = 6;
+
+function renderProjects() {
+  const grid = document.getElementById('projectsGrid');
+  if (!projects.length) {
+    grid.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">🌱</div>
+      <h3>No projects yet</h3>
+      <p>Be the first to plant a seed — add your project above.</p>
+    </div>`;
+    return;
+  }
+  grid.innerHTML = projects.map((p, i) => {
+    const c = bannerColors[p.color] || bannerColors.mint;
+    const pills = p.stack.map(t => `<span class="tech-pill">${t}</span>`).join('');
+    return `<div class="project-card" style="animation-delay:${i*0.06}s">
+      <button class="project-remove-btn" onclick="removeProject(${p.id})" title="Remove">✕</button>
+      <div class="project-banner" style="background:${c.bg};color:${c.text}">
+        <span style="font-size:2.8rem;user-select:none">${p.emoji}</span>
+      </div>
+      <div class="project-body">
+        <div class="project-tech-stack">${pills}</div>
+        <div class="project-name">${p.name}</div>
+        <div class="project-desc">${p.desc}</div>
+        <div class="project-footer">
+          <div class="project-author">
+            <div class="post-avatar" style="background:${c.bg};color:${c.text};border:1px solid ${c.text}22">
+              ${p.author.split(' ').map(n=>n[0]).join('')}
+            </div>
+            ${p.author}
+          </div>
+          <div class="project-actions">
+            <button class="project-btn">⭐ ${p.stars}</button>
+            <button class="project-btn">↗ View</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+renderProjects();
+
+function removeProject(id) {
+  projects = projects.filter(p => p.id !== id);
+  renderProjects();
+}
+
+// ── MODAL ──
+function openModal() {
+  document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('pName').focus(), 100);
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+function addProject() {
+  const name = document.getElementById('pName').value.trim();
+  const desc = document.getElementById('pDesc').value.trim();
+  if (!name || !desc) {
+    document.getElementById('pName').style.borderColor = name ? '' : 'var(--blush-deep)';
+    document.getElementById('pDesc').style.borderColor = desc ? '' : 'var(--blush-deep)';
+    return;
+  }
+  const rawStack = document.getElementById('pStack').value;
+  const stack = rawStack ? rawStack.split(',').map(s=>s.trim()).filter(Boolean) : ['Other'];
+  projects.unshift({
+    id: nextId++,
+    name,
+    emoji: document.getElementById('pEmoji').value.trim() || '🔧',
+    color: document.getElementById('pColor').value,
+    stack,
+    desc,
+    author: document.getElementById('pAuthor').value.trim() || 'Anonymous',
+    stars: 0,
+  });
+  renderProjects();
+  closeModal();
+  // clear
+  ['pName','pDesc','pStack','pAuthor','pEmoji'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('pColor').value = 'mint';
+}
+
+// ── AUTH ──
+function handleLogin() {
+  const btn = document.querySelector('.auth-panel.login .auth-submit');
+  btn.textContent = 'Signing in…';
+  btn.style.opacity = '0.7';
+  setTimeout(() => { btn.textContent = '✓ Welcome back!'; btn.style.background = 'var(--mint-text)'; }, 1200);
+}
+
+// keyboard shortcut
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
